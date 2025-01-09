@@ -3,13 +3,13 @@ on: [push, pull_request]
 
 jobs:
   build-windows:
-    name: Python ${{ matrix.python }} on windows-2019 ${{ matrix.arch }}
-    runs-on: windows-2019
+    name: Python ${{ matrix.python }} on windows-latest ${{ matrix.arch }}
+    runs-on: windows-latest
     strategy:
       fail-fast: false
       matrix:
         python:
-          - '3.11'
+          - '3.12'
           # - 'pypy-3.7-v7.3.5'
         arch:
           - 'x86'
@@ -19,7 +19,7 @@ jobs:
             arch: x86
     steps:
       - uses: actions/checkout@master
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
           architecture: ${{ matrix.arch }}
@@ -48,7 +48,7 @@ jobs:
 
       - name: Cache Python
         id: cache-python
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/AppData/Local/Python${{ matrix.python }}-${{ matrix.arch }}
           key: windows-2019-python-${{ matrix.python }}-${{ matrix.arch }}
@@ -64,8 +64,8 @@ jobs:
         run: python run.py ci-driver winlegacy
 
   build-mac:
-    name: Python ${{ matrix.python }} on macos-13
-    runs-on: macos-13
+    name: Python ${{ matrix.python }} on macos-15
+    runs-on: macos-latest
     strategy:
       fail-fast: false
       matrix:
@@ -73,7 +73,7 @@ jobs:
           - '3.11'
     steps:
       - uses: actions/checkout@master
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
           architecture: x64
@@ -99,7 +99,7 @@ jobs:
           - '3.11'
     steps:
       - uses: actions/checkout@master
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
           architecture: x64
@@ -131,7 +131,7 @@ jobs:
 
       - name: Check pyenv
         id: check-pyenv
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.pyenv
           key: macos-11-${{ matrix.python }}-pyenv
@@ -159,9 +159,10 @@ jobs:
         python:
           - '3.6'
           - '3.11'
+          - '3.12'
     steps:
       - uses: actions/checkout@master
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
           architecture: x64
@@ -175,8 +176,8 @@ jobs:
         run: python run.py ci-driver cffi openssl3
 
   build-ubuntu:
-    name: Python ${{ matrix.python }} on ubuntu-20.04 x64
-    runs-on: ubuntu-20.04
+    name: Python ${{ matrix.python }} on ubuntu-24.04 x64
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -184,10 +185,12 @@ jobs:
           - '3.9'
           - '3.10'
           - '3.11'
+          - '3.12'
+          - '3.13'
           - 'pypy-3.7-v7.3.5'
     steps:
       - uses: actions/checkout@master
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
           architecture: x64
@@ -197,9 +200,9 @@ jobs:
         run: python run.py ci-driver
 
   build-ubuntu-openssl3-py3:
-    name: Python 3 on (Docker) ubuntu-22.04 x64
+    name: Python 3 on (Docker) ubuntu-24.04 x64
     runs-on: ubuntu-latest
-    container: ubuntu:22.04
+    container: ubuntu:24.04
     steps:
       - uses: actions/checkout@master
       - name: Install Python and OpenSSL
