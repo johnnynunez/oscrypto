@@ -1,24 +1,45 @@
-version: 2
+version: 2.1  # Use the most recent version of the CircleCI configuration
+
+orbs:
+  python: circleci/python@2.1.1 # Utilize the Python orb for simplified setup
+
 jobs:
   python2.7:
     machine:
-      image: ubuntu-2004:202101-01
+      image: ubuntu-2004:2023.10.1 # Use a more recent, stable image
     resource_class: arm.medium
     steps:
       - checkout
-      - run: python run.py deps
-      - run: python run.py ci-driver
-  python3.9:
-    machine:
-      image: ubuntu-2004:202101-01
+      - run:
+          name: Install Python 2.7
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y python2.7 python-pip
+      - run:
+          name: Install dependencies and run tests
+          command: |
+            python run.py deps
+            python run.py ci-driver
+
+  python3.12:
+    executor: python/default  # Use the Python orb's executor for 3.12
+    parameters:
+      python-version:
+        type: string
+        default: "3.12" # Specify Python 3.12 
     resource_class: arm.medium
     steps:
       - checkout
-      - run: python run.py deps
-      - run: python3 run.py ci-driver
+      - python/install-packages:
+          pkg-manager: pip
+          # app-dir: ~/my-app/  # Uncomment if your requirements are in a specific directory
+          # pip-dependency-file: requirements.txt # Uncomment if you have a specific requirements file
+      - run:
+          name: Run tests with Python 3.12
+          command: python3 run.py ci-driver # python3 is likely already aliased
+
 workflows:
-  version: 2
   arm64:
     jobs:
       - python2.7
-      - python3.9
+      - python3.12
