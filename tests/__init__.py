@@ -13,8 +13,8 @@ else:
     import importlib.util
 
 
-__version__ = '1.3.0'
-__version_info__ = (1, 3, 0)
+__version__ = '1.4.0'
+__version_info__ = (1, 4, 0)
 
 
 _asn1crypto_module = None
